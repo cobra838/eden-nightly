@@ -152,7 +152,7 @@ jobs:
           ./eden-appimage.sh
 
       - name: Save ccache for ${{ matrix.target }}
-        if: ${{ matrix.optimize == 'Normal' && github.ref_name == 'main' }}
+        if: ${{ matrix.optimize == 'Normal' && github.ref_name == 'master' }}
         uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -210,7 +210,7 @@ jobs:
           ./eden-android.sh
 
       - name: Save ccache for ${{ matrix.target }}
-        if: ${{ github.ref_name == 'main' }}
+        if: ${{ github.ref_name == 'master' }}
         uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -242,14 +242,14 @@ jobs:
              # optimize: normal
              # arch: x86_64
              # runs-on: windows-latest
-#           - toolchain: clang
-#             optimize: PGO
-#             arch: x86_64
-#             runs-on: windows-latest
-#           - toolchain: msys2
-#             optimize: PGO
-#             arch: x86_64
-#             runs-on: windows-latest
+           - toolchain: clang
+             optimize: PGO
+             arch: x86_64
+             runs-on: windows-latest
+           - toolchain: msys2
+             optimize: PGO
+             arch: x86_64
+             runs-on: windows-latest
            - toolchain: msys2
              optimize: normal
              arch: x86_64
@@ -410,7 +410,7 @@ jobs:
           path: eden/build/artifacts/
 
       - name: Save ccache for ${{ matrix.target }}
-        if: ${{ github.ref_name == 'main' }}
+        if: ${{ github.ref_name == 'master' }}
         uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -473,7 +473,7 @@ jobs:
             ./BSD-dependencies.sh && ./eden-BSD.sh
 
       - name: Save ccache
-        if: github.ref_name == 'main'
+        if: github.ref_name == 'master'
         uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -488,7 +488,7 @@ jobs:
   release:
     if: |
       always() &&
-      github.ref_name == 'main' && 
+      github.ref_name == 'master' && 
       (github.event.inputs.job_to_run == 'all' || github.event.inputs.job_to_run == 'windows') &&
       needs.info.result == 'success' &&
       (needs.windows.result == 'success' || needs.windows.result == 'skipped') &&
