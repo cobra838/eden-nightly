@@ -68,47 +68,16 @@ echo "   - Added changelog section."
 echo "## Release table:" >> "$CHANGELOG_FILE"
 echo "| Platform | Normal builds | PGO optimized builds |" >> "$CHANGELOG_FILE"
 echo "|--|--|--|" >> "$CHANGELOG_FILE"
-echo "| Linux (AppImage) | [\`Common x86_64_v3\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Common-Normal-x86_64.AppImage)<br><br>\
-[\`Legacy x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Legacy-Normal-x86_64.AppImage)<br><br>\
-[\`Steamdeck x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Steamdeck-Normal-x86_64.AppImage)<br><br>\
-[\`ROG-ALLY x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-ROG_ALLY-Normal-x86_64.AppImage)<br><br>\
-[\`aarch64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Linux-Normal-aarch64.AppImage) | \
-[\`Common-PGO x86_64_v3\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Common-PGO-x86_64.AppImage)<br><br>\
-[\`Legacy-PGO x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Legacy-PGO-x86_64.AppImage)<br><br>\
-[\`Steamdeck-PGO x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Steamdeck-PGO-x86_64.AppImage)<br><br>\
-[\`ROG-ALLY-PGO x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-ROG_ALLY-PGO-x86_64.AppImage) |" >> "$CHANGELOG_FILE"
-echo "| Linux (AppBundle) | [\`Common x86_64_v3\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Common-Normal-x86_64.dwfs.AppBundle)<br><br>\
-[\`Legacy x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Legacy-Normal-x86_64.dwfs.AppBundle)<br><br>\
-[\`Steamdeck x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Steamdeck-Normal-x86_64.dwfs.AppBundle)<br><br>\
-[\`ROG-ALLY x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-ROG_ALLY-Normal-x86_64.dwfs.AppBundle)<br><br>\
-[\`aarch64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Linux-Normal-aarch64.dwfs.AppBundle) | \
-[\`Common-PGO x86_64_v3\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Common-PGO-x86_64.dwfs.AppBundle)<br><br>\
-[\`Legacy-PGO x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Legacy-PGO-x86_64.dwfs.AppBundle)<br><br>\
-[\`Steamdeck-PGO x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Steamdeck-PGO-x86_64.dwfs.AppBundle)<br><br>\
-[\`ROG-ALLY-PGO x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-ROG_ALLY-PGO-x86_64.dwfs.AppBundle)" >> "$CHANGELOG_FILE"
-echo "| Android | [\`Replace\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Android-Replace.apk)<br><br>\
-[\`Coexist\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Android-Coexist.apk)<br><br>\
-[\`Optimized\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Android-Optimized.apk)<br><br>\
-[\`ChromeOS\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Android-ChromeOS.apk)<br><br>\
-[\`Legacy\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Android-Legacy.apk) |" >> "$CHANGELOG_FILE"
 echo "| Windows (MSVC) | **7z**<br>────────────────<br>\
-[\`x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Windows-msvc-x86_64.7z)<br><br>\
-[\`arm64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Windows-msvc-arm64.7z)<br><br>\
-**Installer**<br>────────────────<br>\
-[\`x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Windows-msvc-x86_64-Installer.exe)<br><br>\
-[\`arm64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Windows-msvc-arm64-Installer.exe) |" >> "$CHANGELOG_FILE"
+[\`x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Windows-msvc-x86_64.7z)<br><br>\ |" >> "$CHANGELOG_FILE"
 echo "| Windows (CLANG) | **7z**<br>────────────────<br>\
 [\`x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Windows-clang-x86_64.7z)<br><br>\
-**Installer**<br>────────────────<br>\
-[\`x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Windows-clang-x86_64-Installer.exe) |" >> "$CHANGELOG_FILE"
+**7z**<br>────────────────<br>\
+[\`x86_64-PGO\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Windows-clang-PGO-x86_64.7z)<br><br>\ |" >> "$CHANGELOG_FILE"
 echo "| Windows (MSYS2) | **7z**<br>────────────────<br>\
 [\`x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Windows-msys2-x86_64.7z)<br><br>\
-**Installer**<br>────────────────<br>\
-[\`x86_64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Windows-msys2-x86_64-Installer.exe) |" >> "$CHANGELOG_FILE"
-echo "| FreeBSD | [\`amd64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-FreeBSD-amd64.tar.gz) | " >> "$CHANGELOG_FILE"
-echo "| Solaris | [\`amd64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Solaris-amd64.tar.gz) | " >> "$CHANGELOG_FILE"
-echo "| MacOS | [\`arm64\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-MacOS-arm64.7z) |" >> "$CHANGELOG_FILE"
-echo "| Source Code | [Source](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Source-Code.7z) | |" >> "$CHANGELOG_FILE"
+**7z**<br>────────────────<br>\
+[\`x86_64-PGO\`](${BASE_DOWNLOAD_URL}/${TAG}/Eden-${COUNT}-Windows-msys2-PGO-x86_64.7z)<br><br>\ |" >> "$CHANGELOG_FILE"
 echo "   - Added release table."
 
 echo "-- Full changelog generated:"
