@@ -29,7 +29,7 @@ if [ "$TARGET" = "Coexist" ]; then
 fi        
 
 if [ "$TARGET" = "ChromeOS" ]; then
-    # try to fix build error
+    # fix build error
 	echo "-- Applying arm patch..."
 	git apply ../patches/arm.patch
 	echo "   Done."

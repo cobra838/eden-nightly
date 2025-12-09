@@ -31,8 +31,9 @@ echo "-- Applying updater patch..."
 patch -p1 < ../patches/update.patch
 echo "   Done."
 
+# Apply ARM patch if building for ARM64
 if [[ "$ARCH" == "arm64" ]]; then
-    echo "-- Applying updater patch..."
+    echo "-- Applying arm patch..."
     patch -p1 < ../patches/arm.patch
     echo "   Done."
 fi
