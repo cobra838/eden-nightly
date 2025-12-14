@@ -50,25 +50,25 @@ jobs:
           ./changelog.sh
 
       - name: Upload tag file
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: tag
           path: ~/tag
 
       - name: Upload count file
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: count
           path: ~/count
 
       - name: Upload changelog file
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: changelog
           path: ~/changelog
 
       # - name: Upload source code
-        # uses: actions/upload-artifact@v5.0.0
+        # uses: actions/upload-artifact@v6.0.0
         # with:
           # name: source
           # path: artifacts
@@ -138,7 +138,7 @@ jobs:
 
       - name: Restore ccache for ${{ matrix.target }}
         if: ${{ matrix.optimize == 'Normal'}}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         id: restore-ccache-appimage
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -153,19 +153,19 @@ jobs:
 
       - name: Save ccache for ${{ matrix.target }}
         if: ${{ matrix.optimize == 'Normal' && github.ref_name == 'main' }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ${{ steps.restore-ccache-appimage.outputs.cache-primary-key }}
 
       - name: Upload appimage
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: eden-${{ matrix.target}}-${{ matrix.optimize }}-appimage
           path: eden/appimage
 
       - name: Upload appbundle
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: eden-${{ matrix.target}}-${{ matrix.optimize }}-appbundle
           path: eden/appbundle
@@ -196,7 +196,7 @@ jobs:
           git clone 'https://git.eden-emu.dev/eden-emu/eden.git' ./eden
 
       - name: Restore ccache for ${{ matrix.target }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         id: restore-ccache-cache
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -211,13 +211,13 @@ jobs:
 
       - name: Save ccache for ${{ matrix.target }}
         if: ${{ github.ref_name == 'main' }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ${{ steps.restore-ccache-cache.outputs.cache-primary-key }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: eden-android-${{ matrix.target }}
           path: eden/src/android/artifacts/
@@ -261,9 +261,7 @@ jobs:
       TOOLCHAIN: ${{ matrix.toolchain }}
       ARCH: ${{ matrix.arch }}
       OPTIMIZE: ${{ matrix.optimize }}
-      CCACHE_DIR: ${{ github.workspace }}/.ccache
-      CCACHE_COMPILERCHECK: content
-      CCACHE_SLOPPINESS: time_macros
+      SCCACHE_GHA_ENABLED: "true"
     steps:
       - uses: actions/checkout@v6.0.1
 
@@ -282,7 +280,7 @@ jobs:
           cache: false
           install: autoconf automake-wrapper automake autoconf-archive base-devel git libtool make p7zip zip unzip
           pacboy: >-
-            boost:p ccache:p clang:p cmake:p enet:p glslang:p libusb:p lld:p llvm:p lz4:p mbedtls:p ninja:p nlohmann-json:p 
+            boost:p sccache:p clang:p cmake:p enet:p fmt:p glslang:p libusb:p lld:p llvm:p lz4:p mbedtls:p ninja:p nlohmann-json:p 
             opus:p qt6-tools:p qt6-translations:p qt6-svg:p qt6-static:p rapidjson:p toolchain:p python-pip:p vulkan-memory-allocator:p vulkan-devel:p zlib:p zstd:p
             jbigkit:p xz:p libdeflate:p bzip2:p lerc:p graphite2:p crt-git:p libwebp:p libtiff:p brotli:p
 
@@ -298,19 +296,19 @@ jobs:
         shell: powershell
         run: |
           ./install-vulkan-sdk.ps1
-          
-      - name: Install ccache
-        if: ${{ matrix.toolchain != 'msys2' && matrix.optimize == 'normal' }}
-        shell: bash
-        run: |
-          choco install ccache -y --no-progress
-          
+
+      - name: Install sccache
+        if: ${{ matrix.optimize == 'normal' }}
+        uses: Eden-CI/sccache-action@v0.0.1
+        with:
+          disable_annotations: true 
+
       - name: Install LLVM
         if: ${{ matrix.toolchain != 'msys2' && matrix.toolchain == 'clang' }}
         shell: powershell
         run: |
           ./install-llvm.ps1
-          
+
       - name: Clone Eden
         run: |
           git clone 'https://git.eden-emu.dev/eden-emu/eden.git' ./eden
@@ -322,16 +320,6 @@ jobs:
         run: |
           shopt -s nullglob
           cp -v "$GITHUB_WORKSPACE"/dist/*.ts ./eden/dist/languages/
-
-      - name: Restore ccache
-        if: ${{ matrix.optimize == 'normal' }}
-        uses: actions/cache/restore@v4
-        id: restore-ccache-windows
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ${{ runner.os }}-ccache-${{ matrix.toolchain }}-${{ matrix.arch }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-ccache-${{ matrix.toolchain }}-${{ matrix.arch }}-
 
       - name: Compile Eden Windows
         run: |
@@ -353,21 +341,14 @@ jobs:
           # mkdir artifacts 2>nul
           # move /y *.exe artifacts\
 
-      - name: Save ccache
-        if: ${{ matrix.optimize == 'normal' && github.ref_name == 'main' }}
-        uses: actions/cache/save@v4
-        with:
-          path: ${{ env.CCACHE_DIR }}
-          key: ${{ steps.restore-ccache-windows.outputs.cache-primary-key }}
-
       - name: Upload Eden 7z
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: eden-windows-${{ matrix.toolchain }}-${{ matrix.optimize }}-${{ matrix.arch }}-7z
           path: eden/build/artifacts/
 
       # - name: Upload Eden installer
-        # uses: actions/upload-artifact@v5.0.0
+        # uses: actions/upload-artifact@v6.0.0
         # with:
           # name: eden-windows-${{ matrix.toolchain }}-${{ matrix.optimize }}-${{ matrix.arch }}-installer
           # path: installer/artifacts/
@@ -397,7 +378,7 @@ jobs:
           cp -v "$GITHUB_WORKSPACE"/dist/*.ts ./eden/dist/languages/
 
       - name: Restore ccache for ${{ matrix.target }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         id: restore-ccache-cache
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -423,14 +404,14 @@ jobs:
           ./eden-macos.sh
 
       - name: Upload
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: eden-macos-${{ matrix.target }}
           path: eden/build/artifacts/
 
       - name: Save ccache for ${{ matrix.target }}
         if: ${{ github.ref_name == 'main' }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ${{ steps.restore-ccache-cache.outputs.cache-primary-key }}
@@ -462,7 +443,7 @@ jobs:
           cp -v "$GITHUB_WORKSPACE"/dist/*.ts ./eden/dist/languages/
 
       - name: Restore ccache
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         id: restore-ccache
         with:
           path: ${{ env.CCACHE_DIR }}
@@ -472,7 +453,7 @@ jobs:
 
       - name: Compile Eden FreeBSD
         if: matrix.target == 'FreeBSD'
-        uses: vmactions/freebsd-vm@v1.2.8
+        uses: vmactions/freebsd-vm@v1.3.0
         with:
           usesh: true
           envs: 'TARGET CCACHE_DIR CCACHE_COMPILERCHECK CCACHE_SLOPPINESS'
@@ -493,13 +474,13 @@ jobs:
 
       - name: Save ccache
         if: github.ref_name == 'main'
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: ${{ env.CCACHE_DIR }}
           key: ${{ steps.restore-ccache.outputs.cache-primary-key }}
 
       - name: Upload
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v6.0.0
         with:
           name: eden-${{ matrix.target }}
           path: eden/build/artifacts/
@@ -523,7 +504,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/download-artifact@v6.0.0
+      - uses: actions/download-artifact@v7.0.0
         with:
           pattern: "*"
           merge-multiple: true

@@ -31,6 +31,13 @@ echo "-- Applying updater patch..."
 patch -p1 < ../patches/update.patch
 echo "   Done."
 
+# Apply ARM patch if building for ARM64
+if [[ "$ARCH" == "arm64" ]]; then
+    echo "-- Applying arm patch..."
+    patch -p1 < ../patches/arm.patch
+    echo "   Done."
+fi
+
 # Set Base CMake flags
 declare -a BASE_CMAKE_FLAGS=(
     "-DBUILD_TESTING=OFF"
@@ -64,8 +71,8 @@ case "${TOOLCHAIN}" in
                 "-DCMAKE_CXX_COMPILER=clang-cl"
                 "-DCMAKE_CXX_FLAGS=-Ofast"
                 "-DCMAKE_C_FLAGS=-Ofast"
-                "-DCMAKE_C_COMPILER_LAUNCHER=ccache"
-                "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+                "-DCMAKE_C_COMPILER_LAUNCHER=sccache"
+                "-DCMAKE_CXX_COMPILER_LAUNCHER=sccache"
             )
         fi
     ;;
@@ -73,6 +80,7 @@ case "${TOOLCHAIN}" in
         if [[ "${OPTIMIZE}" == "PGO" ]]; then
             EXTRA_CMAKE_FLAGS+=(
                 "-DYUZU_STATIC_BUILD=ON"
+                "-DYUZU_DISABLE_LLVM=ON"
                 "-DQt6_DIR=D:/a/_temp/msys64/MINGW64/qt6-static/lib/cmake/Qt6"
                 "-DCMAKE_C_COMPILER=clang"
                 "-DCMAKE_CXX_COMPILER=clang++"
@@ -82,11 +90,12 @@ case "${TOOLCHAIN}" in
         else
             EXTRA_CMAKE_FLAGS+=(
                 "-DYUZU_STATIC_BUILD=ON"
+                "-DYUZU_DISABLE_LLVM=ON"
                 "-DQt6_DIR=D:/a/_temp/msys64/MINGW64/qt6-static/lib/cmake/Qt6"
                 "-DCMAKE_CXX_FLAGS=-march=x86-64-v3 -mtune=generic -O3 -w"
                 "-DCMAKE_C_FLAGS=-march=x86-64-v3 -mtune=generic -O3 -w"
-                "-DCMAKE_C_COMPILER_LAUNCHER=ccache"
-                "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+                "-DCMAKE_C_COMPILER_LAUNCHER=sccache"
+                "-DCMAKE_CXX_COMPILER_LAUNCHER=sccache"
             )
         fi
     ;;
@@ -94,8 +103,8 @@ case "${TOOLCHAIN}" in
         EXTRA_CMAKE_FLAGS+=(
         "-DYUZU_ENABLE_LTO=ON"
         "-DDYNARMIC_ENABLE_LTO=ON"
-        "-DCMAKE_C_COMPILER_LAUNCHER=ccache"
-        "-DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
+        "-DCMAKE_C_COMPILER_LAUNCHER=sccache"
+        "-DCMAKE_CXX_COMPILER_LAUNCHER=sccache"
         )
     ;;
 esac
@@ -117,9 +126,9 @@ cmake .. -G Ninja "${BASE_CMAKE_FLAGS[@]}" "${EXTRA_CMAKE_FLAGS[@]}"
 ninja
 echo "-- Build Completed."
 
-echo "-- Ccache stats:"
+echo "-- Sccache stats:"
 if [[ "${OPTIMIZE}" == "normal" ]]; then
-    ccache -s -v
+    sccache --show-stats
 fi
 
 # Gather dependencies
