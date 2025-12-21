@@ -33,7 +33,6 @@ pacman -Syu --noconfirm \
 	python-pip \
 	qt6ct \
 	qt6-tools \
-	qt6-wayland \
  	sdl3 \
 	strace \
 	unzip \
@@ -50,12 +49,12 @@ pacman -Syu --noconfirm \
 	zsync
 
 if [ "$(uname -m)" = 'x86_64' ]; then
-		pacman -Syu --noconfirm haskell-gnutls svt-av1
+		pacman -Syu --noconfirm --overwrite "*" haskell-gnutls svt-av1
 fi
 
 wget --retry-connrefused --tries=30 "$EXTRA_PACKAGES" -O ./get-debloated-pkgs.sh
 chmod +x ./get-debloated-pkgs.sh
-./get-debloated-pkgs.sh --add-opengl --add-vulkan qt6-base-mini opus-mini libxml2-mini intel-media-driver-mini
+./get-debloated-pkgs.sh --add-mesa qt6-base-mini libxml2-mini llvm-libs-mini opus-nano intel-media-driver
 
 echo "All done!"
 echo "---------------------------------------------------------------"
